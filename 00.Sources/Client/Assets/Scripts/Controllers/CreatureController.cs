@@ -135,6 +135,11 @@ public class CreatureController : MonoBehaviour
 
     }
 
+    public virtual void OnDamaged()
+    {
+
+    }
+
     protected virtual void UpdateAnimation()
     {
         if (State == CreatureState.Idle && _dir == MoveDir.None)
