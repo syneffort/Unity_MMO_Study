@@ -34,37 +34,49 @@ public class CreatureController : MonoBehaviour
         transform.position = pos;
     }
 
+    public Vector3Int GetFrontCellPos()
+    {
+        Vector3Int cellPos = CellPos;
+        
+        switch (_lastDir)
+        {
+            case MoveDir.Up:
+                cellPos += Vector3Int.up;
+                break;
+            case MoveDir.Down:
+                cellPos += Vector3Int.down;
+                break;
+            case MoveDir.Left:
+                cellPos += Vector3Int.left;
+                break;
+            case MoveDir.Right:
+                cellPos += Vector3Int.right;
+                break;
+        }
+
+        return cellPos;
+    }
+
     protected virtual void UpdateController()
     {
-        UpdatePosition();
-        UpdateIsMoving();
+        switch (State)
+        {
+            case CreatureState.Idle:
+                UpdateIdle();
+                break;
+            case CreatureState.Moving:
+                UpdateMoving();
+                break;
+            case CreatureState.Skill:
+                break;
+            case CreatureState.Dead:
+                break;
+        }
     }
 
-    void UpdatePosition()
+    protected virtual void UpdateIdle()
     {
-        if (State != CreatureState.Moving)
-            return;
-
-        Vector3 destPos = Managers.Map.CurrentGrid.CellToWorld(CellPos) + new Vector3(0.5f, 0.5f);
-        Vector3 moveDir = destPos - transform.position;
-
-        float dist = moveDir.magnitude;
-        if (dist < _speed * Time.deltaTime)
-        {
-            transform.position = destPos;
-            State = CreatureState.Idle;
-        }
-        else
-        {
-            transform.position += moveDir.normalized * _speed * Time.deltaTime;
-            State = CreatureState.Moving;
-        }
-
-    }
-
-    void UpdateIsMoving()
-    {
-        if (State == CreatureState.Idle && _dir != MoveDir.None)
+        if (_dir != MoveDir.None)
         {
             Vector3Int destPos = CellPos;
 
@@ -92,6 +104,35 @@ public class CreatureController : MonoBehaviour
                     CellPos = destPos;
             }
         }
+    }
+
+    protected virtual void UpdateMoving()
+    {
+        Vector3 destPos = Managers.Map.CurrentGrid.CellToWorld(CellPos) + new Vector3(0.5f, 0.5f);
+        Vector3 moveDir = destPos - transform.position;
+
+        float dist = moveDir.magnitude;
+        if (dist < _speed * Time.deltaTime)
+        {
+            transform.position = destPos;
+            State = CreatureState.Idle;
+        }
+        else
+        {
+            transform.position += moveDir.normalized * _speed * Time.deltaTime;
+            State = CreatureState.Moving;
+        }
+
+    }
+
+    protected virtual void UpdateSkill()
+    {
+
+    }
+
+    protected virtual void UpdateDead()
+    {
+
     }
 
     protected virtual void UpdateAnimation()
@@ -142,7 +183,25 @@ public class CreatureController : MonoBehaviour
         }
         else if (State == CreatureState.Skill)
         {
-            // TODO
+            switch (_lastDir)
+            {
+                case MoveDir.Up:
+                    _animator.Play("ATTACK_BACK");
+                    _sprite.flipX = false;
+                    break;
+                case MoveDir.Down:
+                    _animator.Play("ATTACK_FRONT");
+                    _sprite.flipX = false;
+                    break;
+                case MoveDir.Left:
+                    _animator.Play("ATTACK_RIGHT");
+                    _sprite.flipX = true;
+                    break;
+                case MoveDir.Right:
+                    _animator.Play("ATTACK_RIGHT");
+                    _sprite.flipX = false;
+                    break;
+            }
         }
         else
         {

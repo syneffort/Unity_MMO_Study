@@ -5,6 +5,8 @@ using static Define;
 
 public class PlayerController : CreatureController
 {
+    Coroutine _coSkill;
+
     protected override void Init()
     {
         base.Init();
@@ -12,13 +14,45 @@ public class PlayerController : CreatureController
 
     protected override void UpdateController()
     {
-        GetDirInput();
+        switch (State)
+        {
+            case CreatureState.Idle:
+                GetDirInput();
+                GetIdleInput();
+                break;
+            case CreatureState.Moving:
+                GetDirInput();
+                break;
+        }
+        
         base.UpdateController();
     }
 
     void LateUpdate()
     {
         Camera.main.transform.position = new Vector3(transform.position.x, transform.position.y, -10);
+    }
+
+    void GetIdleInput()
+    {
+        if (Input.GetKey(KeyCode.Space))
+        {
+            State = CreatureState.Skill;
+            _coSkill = StartCoroutine("CoStartPunch");
+        }
+    }
+
+    IEnumerator CoStartPunch()
+    {
+        GameObject go = Managers.Object.Find(GetFrontCellPos());
+        if (go != null)
+        {
+            Debug.Log(go.name);
+        }
+        yield return new WaitForSeconds(0.25f);
+
+        State = CreatureState.Idle;
+        _coSkill = null;
     }
 
     void GetDirInput()
