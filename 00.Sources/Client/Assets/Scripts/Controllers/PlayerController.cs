@@ -6,7 +6,6 @@ using static Define;
 public class PlayerController : CreatureController
 {
     Coroutine _coSkill;
-    bool _rangeSkill = false;
 
     protected override void Init()
     {
@@ -125,18 +124,27 @@ public class PlayerController : CreatureController
         }
     }
 
+    public override void OnDamaged()
+    {
+        Debug.Log("Player is Hit");
+    }
+
     IEnumerator CoStartPunch()
     {
         GameObject go = Managers.Object.Find(GetFrontCellPos());
         if (go != null)
         {
             Debug.Log(go.name);
+
+            CreatureController cc = go.GetComponent<CreatureController>();
+            if (cc != null)
+                cc.OnDamaged();
         }
         _rangeSkill = false;
 
         yield return new WaitForSeconds(0.25f);
 
-        State = CreatureState.Idle;
+        State = CreatureState.Moving;
         _coSkill = null;
     }
 
@@ -149,7 +157,7 @@ public class PlayerController : CreatureController
         _rangeSkill = true;
 
         yield return new WaitForSeconds(0.3f);
-        State = CreatureState.Idle;
+        State = CreatureState.Moving;
         _coSkill = null;
     }
 

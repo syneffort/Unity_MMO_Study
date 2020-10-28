@@ -20,6 +20,9 @@ public class CreatureController : MonoBehaviour
     [SerializeField]
     protected CreatureState _state = CreatureState.Idle;
 
+    [SerializeField]
+    protected bool _rangeSkill = false;
+
     void Start()
     {
         Init();
@@ -153,7 +156,7 @@ public class CreatureController : MonoBehaviour
 
     protected virtual void UpdateAnimation()
     {
-        if (State == CreatureState.Idle || _dir == MoveDir.None)
+        if (State == CreatureState.Idle)
         {
             switch (_lastDir)
             {
@@ -202,19 +205,19 @@ public class CreatureController : MonoBehaviour
             switch (_lastDir)
             {
                 case MoveDir.Up:
-                    _animator.Play("ATTACK_BACK");
+                    _animator.Play(_rangeSkill ? "ATTACK_WEAPON_BACK" : "ATTACK_BACK");
                     _sprite.flipX = false;
                     break;
                 case MoveDir.Down:
-                    _animator.Play("ATTACK_FRONT");
+                    _animator.Play(_rangeSkill ? "ATTACK_WEAPON_FRONT" : "ATTACK_FRONT");
                     _sprite.flipX = false;
                     break;
                 case MoveDir.Left:
-                    _animator.Play("ATTACK_RIGHT");
+                    _animator.Play(_rangeSkill ? "ATTACK_WEAPON_RIGHT" : "ATTACK_RIGHT");
                     _sprite.flipX = true;
                     break;
                 case MoveDir.Right:
-                    _animator.Play("ATTACK_RIGHT");
+                    _animator.Play(_rangeSkill ? "ATTACK_WEAPON_RIGHT" : "ATTACK_RIGHT");
                     _sprite.flipX = false;
                     break;
             }
@@ -223,6 +226,20 @@ public class CreatureController : MonoBehaviour
         {
             // TODO
         }
+    }
+
+    public MoveDir GetDirectionFromVec(Vector3Int dir)
+    {
+        if (dir.x > 0)
+            return MoveDir.Right;
+        else if (dir.x < 0)
+            return MoveDir.Left;
+        else if (dir.y > 0)
+            return MoveDir.Up;
+        else if (dir.y < 0)
+            return MoveDir.Down;
+        else
+            return MoveDir.None;
     }
 
     public MoveDir Dir
