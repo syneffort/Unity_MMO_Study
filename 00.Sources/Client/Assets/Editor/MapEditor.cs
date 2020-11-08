@@ -10,53 +10,44 @@ using UnityEditor;
 
 public class MapEditor
 {
+
 #if UNITY_EDITOR
 
-    // %(Ctrl), #(Shift), &(Alt)
-    //[MenuItem("Tools/GenerateMap %#G")]
-    //private static void HelloWorld()
-    //{
-    //    if (EditorUtility.DisplayDialog("Hello World", "Creat?", "Creat", "Cancel"))
-    //    {
-    //        new GameObject("HelloWorld");
-    //    }
-    //}
+	// % (Ctrl), # (Shift), & (Alt)
 
-    [MenuItem("Tools/GenerateMap %#G")]
-    private static void GenerateMap()
-    {
-        GameObject[] gameObjects = Resources.LoadAll<GameObject>("Prefabs/Map");
+	[MenuItem("Tools/GenerateMap %#g")]
+	private static void GenerateMap()
+	{
+		GameObject[] gameObjects = Resources.LoadAll<GameObject>("Prefabs/Map");
 
-        foreach (GameObject go in gameObjects)
-        {
-            Tilemap tmBase = Util.FindChild<Tilemap>(go, "Tilemap_Base", true);
-            Tilemap tm = Util.FindChild<Tilemap>(go, "Tilemap_Collision", true);
-            //if (tm == null)
-            //    return;
+		foreach (GameObject go in gameObjects)
+		{
+			Tilemap tmBase = Util.FindChild<Tilemap>(go, "Tilemap_Base", true);
+			Tilemap tm = Util.FindChild<Tilemap>(go, "Tilemap_Collision", true);
 
-            using (StreamWriter writer = File.CreateText($"Assets/Resources/Map/{go.name}.txt"))
-            {
-                writer.WriteLine(tmBase.cellBounds.xMin);
-                writer.WriteLine(tmBase.cellBounds.xMax);
-                writer.WriteLine(tmBase.cellBounds.yMin);
-                writer.WriteLine(tmBase.cellBounds.yMax);
+			using (var writer = File.CreateText($"Assets/Resources/Map/{go.name}.txt"))
+			{
+				writer.WriteLine(tmBase.cellBounds.xMin);
+				writer.WriteLine(tmBase.cellBounds.xMax);
+				writer.WriteLine(tmBase.cellBounds.yMin);
+				writer.WriteLine(tmBase.cellBounds.yMax);
 
-                for (int y = tmBase.cellBounds.yMax; y >= tmBase.cellBounds.yMin; y--)
-                {
-                    for (int x = tmBase.cellBounds.xMin; x <= tmBase.cellBounds.xMax; x++)
-                    {
-                        TileBase tile = tm.GetTile(new Vector3Int(x, y, 0));
-                        if (tile != null)
-                            writer.Write("1");
-                        else
-                            writer.Write("0");
-                    }
-                    writer.WriteLine();
-                }
-            }
-        }
-    }
-
+				for (int y = tmBase.cellBounds.yMax; y >= tmBase.cellBounds.yMin; y--)
+				{
+					for (int x = tmBase.cellBounds.xMin; x <= tmBase.cellBounds.xMax; x++)
+					{
+						TileBase tile = tm.GetTile(new Vector3Int(x, y, 0));
+						if (tile != null)
+							writer.Write("1");
+						else
+							writer.Write("0");
+					}
+					writer.WriteLine();
+				}
+			}
+		}
+	}
 
 #endif
+
 }
