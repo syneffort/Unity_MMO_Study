@@ -33,18 +33,18 @@ namespace Google.Protobuf.Protocol {
             "EhAKCHBsYXllcklkGAEgASgFEicKB3Bvc0luZm8YAiABKAsyFi5Qcm90b2Nv",
             "bC5Qb3NpdGlvbkluZm8iVQoKUGxheWVySW5mbxIQCghwbGF5ZXJJZBgBIAEo",
             "BRIMCgRuYW1lGAIgASgJEicKB3Bvc0luZm8YAyABKAsyFi5Qcm90b2NvbC5Q",
-            "b3NpdGlvbkluZm8idwoMUG9zaXRpb25JbmZvEiYKBXN0YXRlGAEgASgOMhcu",
-            "UHJvdG9jb2wuQ3JlYXR1cmVTdGF0ZRIjCgdtb3ZlRGlyGAIgASgOMhIuUHJv",
-            "dG9jb2wuTW92ZXJEaXISDAoEcG9zWBgDIAEoBRIMCgRwb3NZGAQgASgFKl8K",
-            "BU1zZ0lkEhAKDFNfRU5URVJfR0FNRRAAEhAKDFNfTEVBVkVfR0FNRRABEgsK",
-            "B1NfU1BBV04QAhINCglTX0RFU1BBV04QAxIKCgZDX01PVkUQBBIKCgZTX01P",
-            "VkUQBSo6Cg1DcmVhdHVyZVN0YXRlEggKBElETEUQABIKCgZNT1ZJTkcQARIJ",
-            "CgVTS0lMTBACEggKBERFQUQQAyo7CghNb3ZlckRpchIICgROT05FEAASBgoC",
-            "VVAQARIICgRET1dOEAISCAoETEVGVBADEgkKBVJJR0hUEARCG6oCGEdvb2ds",
-            "ZS5Qcm90b2J1Zi5Qcm90b2NvbGIGcHJvdG8z"));
+            "b3NpdGlvbkluZm8idgoMUG9zaXRpb25JbmZvEiYKBXN0YXRlGAEgASgOMhcu",
+            "UHJvdG9jb2wuQ3JlYXR1cmVTdGF0ZRIiCgdtb3ZlRGlyGAIgASgOMhEuUHJv",
+            "dG9jb2wuTW92ZURpchIMCgRwb3NYGAMgASgFEgwKBHBvc1kYBCABKAUqXwoF",
+            "TXNnSWQSEAoMU19FTlRFUl9HQU1FEAASEAoMU19MRUFWRV9HQU1FEAESCwoH",
+            "U19TUEFXThACEg0KCVNfREVTUEFXThADEgoKBkNfTU9WRRAEEgoKBlNfTU9W",
+            "RRAFKjoKDUNyZWF0dXJlU3RhdGUSCAoESURMRRAAEgoKBk1PVklORxABEgkK",
+            "BVNLSUxMEAISCAoEREVBRBADKjoKB01vdmVEaXISCAoETk9ORRAAEgYKAlVQ",
+            "EAESCAoERE9XThACEggKBExFRlQQAxIJCgVSSUdIVBAEQhuqAhhHb29nbGUu",
+            "UHJvdG9idWYuUHJvdG9jb2xiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, },
-          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Google.Protobuf.Protocol.MsgId), typeof(global::Google.Protobuf.Protocol.CreatureState), typeof(global::Google.Protobuf.Protocol.MoverDir), }, null, new pbr::GeneratedClrTypeInfo[] {
+          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Google.Protobuf.Protocol.MsgId), typeof(global::Google.Protobuf.Protocol.CreatureState), typeof(global::Google.Protobuf.Protocol.MoveDir), }, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.S_EnterGame), global::Google.Protobuf.Protocol.S_EnterGame.Parser, new[]{ "Player" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.S_LeaveGame), global::Google.Protobuf.Protocol.S_LeaveGame.Parser, null, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.S_Spawn), global::Google.Protobuf.Protocol.S_Spawn.Parser, new[]{ "Players" }, null, null, null, null),
@@ -75,7 +75,7 @@ namespace Google.Protobuf.Protocol {
     [pbr::OriginalName("DEAD")] Dead = 3,
   }
 
-  public enum MoverDir {
+  public enum MoveDir {
     [pbr::OriginalName("NONE")] None = 0,
     [pbr::OriginalName("UP")] Up = 1,
     [pbr::OriginalName("DOWN")] Down = 2,
@@ -1104,9 +1104,9 @@ namespace Google.Protobuf.Protocol {
 
     /// <summary>Field number for the "moveDir" field.</summary>
     public const int MoveDirFieldNumber = 2;
-    private global::Google.Protobuf.Protocol.MoverDir moveDir_ = global::Google.Protobuf.Protocol.MoverDir.None;
+    private global::Google.Protobuf.Protocol.MoveDir moveDir_ = global::Google.Protobuf.Protocol.MoveDir.None;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::Google.Protobuf.Protocol.MoverDir MoveDir {
+    public global::Google.Protobuf.Protocol.MoveDir MoveDir {
       get { return moveDir_; }
       set {
         moveDir_ = value;
@@ -1159,7 +1159,7 @@ namespace Google.Protobuf.Protocol {
     public override int GetHashCode() {
       int hash = 1;
       if (State != global::Google.Protobuf.Protocol.CreatureState.Idle) hash ^= State.GetHashCode();
-      if (MoveDir != global::Google.Protobuf.Protocol.MoverDir.None) hash ^= MoveDir.GetHashCode();
+      if (MoveDir != global::Google.Protobuf.Protocol.MoveDir.None) hash ^= MoveDir.GetHashCode();
       if (PosX != 0) hash ^= PosX.GetHashCode();
       if (PosY != 0) hash ^= PosY.GetHashCode();
       if (_unknownFields != null) {
@@ -1179,7 +1179,7 @@ namespace Google.Protobuf.Protocol {
         output.WriteRawTag(8);
         output.WriteEnum((int) State);
       }
-      if (MoveDir != global::Google.Protobuf.Protocol.MoverDir.None) {
+      if (MoveDir != global::Google.Protobuf.Protocol.MoveDir.None) {
         output.WriteRawTag(16);
         output.WriteEnum((int) MoveDir);
       }
@@ -1202,7 +1202,7 @@ namespace Google.Protobuf.Protocol {
       if (State != global::Google.Protobuf.Protocol.CreatureState.Idle) {
         size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) State);
       }
-      if (MoveDir != global::Google.Protobuf.Protocol.MoverDir.None) {
+      if (MoveDir != global::Google.Protobuf.Protocol.MoveDir.None) {
         size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) MoveDir);
       }
       if (PosX != 0) {
@@ -1225,7 +1225,7 @@ namespace Google.Protobuf.Protocol {
       if (other.State != global::Google.Protobuf.Protocol.CreatureState.Idle) {
         State = other.State;
       }
-      if (other.MoveDir != global::Google.Protobuf.Protocol.MoverDir.None) {
+      if (other.MoveDir != global::Google.Protobuf.Protocol.MoveDir.None) {
         MoveDir = other.MoveDir;
       }
       if (other.PosX != 0) {
@@ -1250,7 +1250,7 @@ namespace Google.Protobuf.Protocol {
             break;
           }
           case 16: {
-            MoveDir = (global::Google.Protobuf.Protocol.MoverDir) input.ReadEnum();
+            MoveDir = (global::Google.Protobuf.Protocol.MoveDir) input.ReadEnum();
             break;
           }
           case 24: {

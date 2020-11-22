@@ -20,7 +20,7 @@ enum CreatureState {
   DEAD = 3;
 }
 
-enum MoverDir {
+enum MoveDir {
   NONE = 0;
   UP = 1;
   DOWN = 2;
@@ -61,7 +61,7 @@ message PlayerInfo {
 
 message PositionInfo {
   CreatureState state = 1;
-  MoverDir moveDir = 2;
+  MoveDir moveDir = 2;
   int32 posX = 3;
   int32 posY = 4;
 }
