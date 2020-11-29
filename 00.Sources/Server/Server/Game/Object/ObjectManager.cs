@@ -37,7 +37,7 @@ namespace Server.Game
         {
             lock (_lock)
             {
-                return ((int)type << 24) | (_counter);
+                return ((int)type << 24) | (_counter++);
             }
         }
 
