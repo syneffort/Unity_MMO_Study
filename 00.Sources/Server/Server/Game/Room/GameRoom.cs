@@ -25,9 +25,17 @@ namespace Server.Game
             Monster monster = ObjectManager.Instance.Add<Monster>();
             monster.CellPos = new Vector2Int(5, 5);
             EnterGame(monster);
+
+            TestTimer();
         }
 
-        // 일반적으로 10Hz 수준으로 연산
+        void TestTimer()
+        {
+            Console.WriteLine("TestTimer");
+            PushAfter(100, TestTimer);
+        }
+
+        // 일반적으로 10Hz(100ms) 수준으로 연산
         public void Update()
         {
             foreach (Monster monster in _monsters.Values)
@@ -39,6 +47,8 @@ namespace Server.Game
             {
                 projectile.Update();
             }
+
+            Flush();
         }
 
         public void EnterGame(GameObject gameObject)
