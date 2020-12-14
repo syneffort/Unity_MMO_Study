@@ -25,14 +25,6 @@ namespace Server.Game
             Monster monster = ObjectManager.Instance.Add<Monster>();
             monster.CellPos = new Vector2Int(5, 5);
             EnterGame(monster);
-
-            TestTimer();
-        }
-
-        void TestTimer()
-        {
-            Console.WriteLine("TestTimer");
-            PushAfter(100, TestTimer);
         }
 
         // 일반적으로 10Hz(100ms) 수준으로 연산
@@ -139,9 +131,9 @@ namespace Server.Game
                 Monster monster = null;
                 if (_monsters.Remove(objectId, out monster) == false)
                     return;
-
-                monster.Room = null;
+                
                 Map.ApplyLeave(monster);
+                monster.Room = null;
             }
             else if (type == GameObjectType.Projectile)
             {
