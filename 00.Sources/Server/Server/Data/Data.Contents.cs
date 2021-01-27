@@ -87,7 +87,6 @@ namespace Server.Data
         public int maxCount;
     }
 
-
     [Serializable]
     public class ItemLoader : ILoader<int, ItemData>
     {
@@ -114,6 +113,43 @@ namespace Server.Data
                 dict.Add(item.id, item);
             }
 
+            return dict;
+        }
+    }
+    #endregion
+
+    #region Monster
+
+    [Serializable]
+    public class RewardData
+    {
+        public int probability;
+        public int itemId;
+        public int count;
+    }
+
+    [Serializable]
+    public class MonsterData
+    {
+        public int id;
+        public string name;
+        public StatInfo stat;
+        public List<RewardData> rewards;
+        //public string prefabPath;
+    }
+
+    [Serializable]
+    public class MonsterLoader : ILoader<int, MonsterData>
+    {
+        public List<MonsterData> monsters = new List<MonsterData>();
+
+        public Dictionary<int, MonsterData> MakeDict()
+        {
+            Dictionary<int, MonsterData> dict = new Dictionary<int, MonsterData>();
+            foreach (MonsterData monster in monsters)
+            {
+                dict.Add(monster.id, monster);
+            }
             return dict;
         }
     }
