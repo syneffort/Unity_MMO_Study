@@ -8,7 +8,7 @@ using System.Text;
 
 namespace Server.DB
 {
-    public class DbTransaction : JobSerializer
+    public partial class DbTransaction : JobSerializer
     {
         public static DbTransaction Instance { get; } = new DbTransaction();
 
