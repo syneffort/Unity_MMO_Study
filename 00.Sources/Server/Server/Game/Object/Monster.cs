@@ -1,6 +1,7 @@
 ﻿using Google.Protobuf.Protocol;
 using Microsoft.VisualBasic.CompilerServices;
 using Server.Data;
+using Server.DB;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -196,8 +197,16 @@ namespace Server.Game
         {
             base.OnDead(attacker);
 
-            // TOOD : 아이템 생성
-            
+            GameObject owner = attacker.GetOwner();
+            if (owner.ObjectType == GameObjectType.Player)
+            {
+                RewardData rewardData = GetRandReward();
+                if (rewardData != null)
+                {
+                    Player player = (Player)owner;
+                    DbTransaction.RewardPlayer(player, rewardData, player.Room);
+                }
+            }
         }
 
         RewardData GetRandReward()
