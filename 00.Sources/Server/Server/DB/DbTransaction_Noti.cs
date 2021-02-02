@@ -28,7 +28,6 @@ namespace Server.DB
                     db.Entry(itemDb).State = EntityState.Unchanged;
                     db.Entry(itemDb).Property(nameof(itemDb.Equipped)).IsModified = true;
 
-                    db.Items.Add(itemDb);
                     bool success = db.SaveChangesEx();
                     if (!success)
                     {
