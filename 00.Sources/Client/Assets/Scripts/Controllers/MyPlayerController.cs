@@ -85,7 +85,22 @@ public class MyPlayerController : PlayerController
 				invenUI.RefreshUI();
 			}
         }
-    }
+		if (Input.GetKeyDown(KeyCode.C))
+		{
+			UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
+			UI_Stat statUI = gameSceneUI.StatUI;
+
+			if (statUI.gameObject.activeSelf)
+			{
+				statUI.gameObject.SetActive(false);
+			}
+			else
+			{
+				statUI.gameObject.SetActive(true);
+				statUI.RefreshUI();
+			}
+		}
+	}
 
 	// 키보드 입력
 	void GetDirInput()
