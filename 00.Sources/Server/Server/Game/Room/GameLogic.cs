@@ -4,13 +4,23 @@ using System.Text;
 
 namespace Server.Game
 {
-    public class RoomManager
+    public class GameLogic : JobSerializer
     {
-        public static RoomManager Instance { get; } = new RoomManager();
+        public static GameLogic Instance { get; } = new GameLogic();
 
         object _lock = new object();
         Dictionary<int, GameRoom> _rooms = new Dictionary<int, GameRoom>();
         int _roomId = 1;
+
+        public void Update()
+        {
+            Flush();
+
+            foreach (GameRoom room in _rooms.Values)
+            {
+                room.Update();
+            }
+        }
 
         public GameRoom Add(int mapId)
         {
