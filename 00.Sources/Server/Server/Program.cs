@@ -21,7 +21,8 @@ namespace Server
 	// 스레드 구조
 	// 1. Recv (N개)
 	// 2. GameRoomManager (1개) -> GameLogic
-	// 3. DB (1개)
+	// 3. Send (1개)
+	// 4. DB (1개)
 
 	class Program
 	{
@@ -32,6 +33,7 @@ namespace Server
 			while (true)
             {
 				GameLogic.Instance.Update();
+
 				Thread.Sleep(0);
             }
         }
@@ -41,9 +43,24 @@ namespace Server
 			while (true)
 			{
 				DbTransaction.Instance.Flush();
+
 				Thread.Sleep(0);
 			}
 		}
+
+		static void NetworkTask()
+        {
+			while (true)
+            {
+				List<ClientSession> sessions = SessionManager.Instance.GetSessions();
+				foreach (ClientSession session in sessions)
+                {
+					session.FlushSend();
+                }
+
+				Thread.Sleep(0);
+            }
+        }
 
 		static void Main(string[] args)
 		{
@@ -61,11 +78,17 @@ namespace Server
 			_listener.Init(endPoint, () => { return SessionManager.Instance.Generate(); });
 			Console.WriteLine("Listening...");
 
-            // GameLogicTask
+            // GameLogic Task
             {
 				Task gameLogicTask = new Task(GameLogicTask, TaskCreationOptions.LongRunning);
 				gameLogicTask.Start();
             }
+
+			// Network Task
+			{
+				Task networkTask = new Task(NetworkTask, TaskCreationOptions.LongRunning);
+				networkTask.Start();
+			}
 
 			DbTask();
 		}

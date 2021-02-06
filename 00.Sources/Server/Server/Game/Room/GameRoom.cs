@@ -31,11 +31,6 @@ namespace Server.Game
         // 일반적으로 10Hz(100ms) 수준으로 연산
         public void Update()
         {
-            foreach (Monster monster in _monsters.Values)
-            {
-                monster.Update();
-            }
-
             Flush();
         }
 
