@@ -17,6 +17,9 @@ public class ObjectManager
 
 	public void Add(ObjectInfo info, bool myPlayer = false)
     {
+		if (MyPlayer != null && MyPlayer.Id == info.ObjectId)
+			return;
+
 		GameObjectType objectType = GetObjectTypeById(info.ObjectId);
 		if (objectType == GameObjectType.Player)
         {
@@ -72,6 +75,9 @@ public class ObjectManager
 
 	public void Remove(int id)
 	{
+		if (MyPlayer != null && MyPlayer.Id == id)
+			return;
+
 		GameObject go = FindById(id);
 		if (go == null)
 			return;

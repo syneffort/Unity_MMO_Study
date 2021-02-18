@@ -169,18 +169,42 @@ namespace Server.Game
 				_objects[y, x] = gameObject;
 			}
 
-			Player p = gameObject as Player;
-			if (p != null)
+			GameObjectType type = ObjectManager.GetObjectById(gameObject.Id);
+			if (type == GameObjectType.Player)
             {
+				Player player = (Player)gameObject;
+
 				Zone now = gameObject.Room.GetZone(gameObject.CellPos);
 				Zone after = gameObject.Room.GetZone(dest);
 				if (now != after)
-                {
-					if (now != null)
-						now.Players.Remove(p);
-					if (after != null)
-						after.Players.Add(p);
-                }
+				{
+					now.Players.Remove(player);
+					after.Players.Add(player);
+				}
+			}
+			else if (type == GameObjectType.Monster)
+            {
+				Monster monster = (Monster)gameObject;
+
+				Zone now = gameObject.Room.GetZone(gameObject.CellPos);
+				Zone after = gameObject.Room.GetZone(dest);
+				if (now != after)
+				{
+					now.Monsters.Remove(monster);
+					after.Monsters.Add(monster);
+				}
+			}
+			else if (type == GameObjectType.Projectile)
+            {
+				Projectile projectile = (Projectile)gameObject;
+
+				Zone now = gameObject.Room.GetZone(gameObject.CellPos);
+				Zone after = gameObject.Room.GetZone(dest);
+				if (now != after)
+				{
+					now.Projectiles.Remove(projectile);
+					after.Projectiles.Add(projectile);
+				}
 			}
 
 			// 실제 좌표 이동

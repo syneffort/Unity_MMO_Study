@@ -10,6 +10,8 @@ namespace Server.Game
 {
     public partial class GameRoom : JobSerializer
     {
+        public const int VisionCells = 5;
+
         public int RoomId { get; set; }
 
         Dictionary<int, Player> _players = new Dictionary<int, Player>();
@@ -92,20 +94,7 @@ namespace Server.Game
                     enterPacket.Player = player.Info;
                     player.Session.Send(enterPacket);
 
-                    S_Spawn spawnPacket = new S_Spawn();
-                    foreach (Player p in _players.Values)
-                    {
-                        if (p != player)
-                            spawnPacket.Objects.Add(p.Info);
-                    }
-
-                    foreach (Monster m in _monsters.Values)
-                        spawnPacket.Objects.Add(m.Info);
-
-                    foreach (Projectile p in _projectiles.Values)
-                        spawnPacket.Objects.Add(p.Info);
-
-                    player.Session.Send(spawnPacket);
+                    player.Vision.Update();
                 }
             }
             else if (type == GameObjectType.Monster)
@@ -115,6 +104,7 @@ namespace Server.Game
                 monster.Room = this;
 
                 Map.ApplyMove(monster, new Vector2Int(monster.CellPos.x, monster.CellPos.y));
+                GetZone(monster.CellPos).Monsters.Add(monster);
 
                 monster.Update();
             }
@@ -124,18 +114,8 @@ namespace Server.Game
                 _projectiles.Add(gameObject.Id, projectile);
                 projectile.Room = this;
 
+                GetZone(projectile.CellPos).Projectiles.Add(projectile);
                 projectile.Update();
-            }
-
-            // 타인에게 정보 전송
-            {
-                S_Spawn spawnPacket = new S_Spawn();
-                spawnPacket.Objects.Add(gameObject.Info);
-                foreach (Player p in _players.Values)
-                {
-                    if (p.Id != gameObject.Id)
-                        p.Session.Send(spawnPacket);
-                }
             }
         }
 
@@ -166,7 +146,9 @@ namespace Server.Game
                 Monster monster = null;
                 if (_monsters.Remove(objectId, out monster) == false)
                     return;
-                
+
+                GetZone(monster.CellPos).Monsters.Remove(monster);
+
                 Map.ApplyLeave(monster);
                 monster.Room = null;
             }
@@ -176,18 +158,9 @@ namespace Server.Game
                 if (_projectiles.Remove(objectId, out projectile) == false)
                     return;
 
-                projectile.Room = null;
-            }
+                GetZone(projectile.CellPos).Projectiles.Remove(projectile);
 
-            // 타인에게 정보 전송
-            {
-                S_Despawn despawnPacket = new S_Despawn();
-                despawnPacket.ObjectIds.Add(objectId);
-                foreach (Player p in _players.Values)
-                {
-                    if (p.Id != objectId)
-                        p.Session.Send(despawnPacket);
-                }
+                projectile.Room = null;
             }
         }
 
@@ -205,21 +178,22 @@ namespace Server.Game
         public void Broadcast(Vector2Int pos, IMessage packet)
         {
             List<Zone> zones = GetAdjacentZone(pos);
-            //foreach (Zone zone in zones)
-            //{
-            //    foreach (Player p in zone.Players)
-            //    {
-            //        p.Session.Send(packet);
-            //    }
-            //}
 
             foreach (Player p in zones.SelectMany(z => z.Players))
             {
+                int dx = p.CellPos.x - pos.x;
+                int dy = p.CellPos.y - pos.y;
+
+                if (Math.Abs(dx) > GameRoom.VisionCells)
+                    continue;
+                if (Math.Abs(dy) > GameRoom.VisionCells)
+                    continue;
+
                 p.Session.Send(packet);
             }
         }
 
-        public List<Zone> GetAdjacentZone(Vector2Int cellPos, int cells = 5)
+        public List<Zone> GetAdjacentZone(Vector2Int cellPos, int cells = GameRoom.VisionCells)
         {
             HashSet<Zone> zones = new HashSet<Zone>();
 
