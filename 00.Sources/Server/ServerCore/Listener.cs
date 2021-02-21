@@ -33,23 +33,38 @@ namespace ServerCore
 
 		void RegisterAccept(SocketAsyncEventArgs args)
 		{
-			args.AcceptSocket = null;
+			try
+            {
+				args.AcceptSocket = null;
 
-			bool pending = _listenSocket.AcceptAsync(args);
-			if (pending == false)
-				OnAcceptCompleted(null, args);
+				bool pending = _listenSocket.AcceptAsync(args);
+				if (pending == false)
+					OnAcceptCompleted(null, args);
+			}
+			catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
 		}
 
 		void OnAcceptCompleted(object sender, SocketAsyncEventArgs args)
 		{
-			if (args.SocketError == SocketError.Success)
-			{
-				Session session = _sessionFactory.Invoke();
-				session.Start(args.AcceptSocket);
-				session.OnConnected(args.AcceptSocket.RemoteEndPoint);
+			try
+            {
+				if (args.SocketError == SocketError.Success)
+				{
+					Session session = _sessionFactory.Invoke();
+					session.Start(args.AcceptSocket);
+					session.OnConnected(args.AcceptSocket.RemoteEndPoint);
+				}
+				else
+					Console.WriteLine(args.SocketError.ToString());
 			}
-			else
-				Console.WriteLine(args.SocketError.ToString());
+			catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+			
 
 			RegisterAccept(args);
 		}
