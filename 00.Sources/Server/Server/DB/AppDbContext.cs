@@ -19,7 +19,7 @@ namespace Server.DB
         protected override void OnConfiguring(DbContextOptionsBuilder option)
         {
             option
-                .UseLoggerFactory(_logger)
+                //.UseLoggerFactory(_logger)
                 .UseSqlServer(ConfigManager.Config == null ? _connectionString : ConfigManager.Config.connectionString);
         }
 

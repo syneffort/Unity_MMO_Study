@@ -28,7 +28,7 @@ namespace Server.Game
                 movePacket.PosInfo = PosInfo;
                 Room.Broadcast(CellPos, movePacket);
 
-                Console.WriteLine($"ArrowId{Id} was moved;");
+                //Console.WriteLine($"ArrowId{Id} was moved;");
             }
             else
             {

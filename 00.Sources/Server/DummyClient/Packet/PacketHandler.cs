@@ -7,6 +7,7 @@ using System.Text;
 
 class PacketHandler
 {
+	// Step4
 	public static void S_EnterGameHandler(PacketSession session, IMessage packet)
 	{
 		S_EnterGame enterGamePacket = packet as S_EnterGame;
@@ -48,19 +49,55 @@ class PacketHandler
 		S_Die diePacket = packet as S_Die;
 	}
 
+	// Step1
 	public static void S_ConnectedHandler(PacketSession session, IMessage packet)
 	{
 		C_Login loginPacket = new C_Login();
+		ServerSession serverSession = (ServerSession)session;
+
+		loginPacket.UniqueId = $"DummyClient_{serverSession.DummyId.ToString("0000")}";
+		serverSession.Send(loginPacket);
 	}
 
+	// Step2
 	public static void S_LoginHandler(PacketSession session, IMessage packet)
 	{
 		S_Login loginPacket = packet as S_Login;
+		ServerSession serverSession = (ServerSession)session;
+
+		// TODO : 로비 UI에서 캐릭터를 보여주고 선택할 수 있도록
+		if (loginPacket.Players == null || loginPacket.Players.Count == 0)
+		{
+			C_CreatePlayer createPacket = new C_CreatePlayer();
+			createPacket.Name = $"PLAYER_{serverSession.DummyId.ToString("0000")}";
+			serverSession.Send(createPacket);
+		}
+		else
+		{
+			// 무조건 첫번 째 로그인
+			LobbyPlayerInfo info = loginPacket.Players[0];
+			C_EnterGame enterGamePacket = new C_EnterGame();
+			enterGamePacket.Name = info.Name;
+			serverSession.Send(enterGamePacket);
+		}
 	}
 
+	// Step3
 	public static void S_CreatePlayerHandler(PacketSession session, IMessage packet)
 	{
 		S_CreatePlayer createOkPacket = (S_CreatePlayer)packet;
+		ServerSession serverSession = (ServerSession)session;
+
+		if (createOkPacket.Player == null)
+		{
+			// 생략
+		}
+		else
+		{
+			C_EnterGame enterGamePacket = new C_EnterGame();
+			enterGamePacket.Name = createOkPacket.Player.Name;
+			serverSession.Send(enterGamePacket);
+		}
 	}
 
 	public static void S_ItemListHandler(PacketSession session, IMessage packet)
