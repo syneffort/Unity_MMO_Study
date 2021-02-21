@@ -98,19 +98,19 @@ namespace Server.Game
             List<GameObject> removed = PreviousObjects.Except(currentObject).ToList();
             if (removed.Count > 0)
             {
-                S_Despawn spawnPacket = new S_Despawn();
+                S_Despawn despawnPacket = new S_Despawn();
 
                 foreach (GameObject gameObject in removed)
                 {
-                    spawnPacket.ObjectIds.Add(gameObject.Id);
+                    despawnPacket.ObjectIds.Add(gameObject.Id);
                 }
 
-                Owner.Session.Send(spawnPacket);
+                 Owner.Session.Send(despawnPacket);
             }
 
             PreviousObjects = currentObject;
 
-            Owner.Room.PushAfter(100, Update);
+            Owner.Room.PushAfter(250, Update);
         }
     }
 }

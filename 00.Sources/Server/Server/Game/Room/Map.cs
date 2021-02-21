@@ -139,6 +139,10 @@ namespace Server.Game
 			if (posInfo.PosY < MinY || posInfo.PosY > MaxY)
 				return false;
 
+			// Zone
+			Zone zone = gameObject.Room.GetZone(gameObject.CellPos);
+			zone.Remove(gameObject);
+
 			{
 				int x = posInfo.PosX - MinX;
 				int y = MaxY - posInfo.PosY;
@@ -149,10 +153,8 @@ namespace Server.Game
 			return true;
 		}
 
-		public bool ApplyMove(GameObject gameObject, Vector2Int dest)
+		public bool ApplyMove(GameObject gameObject, Vector2Int dest, bool checkObjects = true, bool collision = true)
         {
-			ApplyLeave(gameObject);
-
 			if (gameObject.Room == null)
 				return false;
 
@@ -160,15 +162,26 @@ namespace Server.Game
 				return false;
 
 			PositionInfo posInfo = gameObject.Info.PosInfo;
-			if (CanGo(dest, true) == false)
+			if (CanGo(dest, checkObjects) == false)
 				return false;
 
+			if (collision)
             {
-				int x = dest.x - MinX;
-				int y = MaxY - dest.y;
-				_objects[y, x] = gameObject;
+				{
+					int x = posInfo.PosX - MinX;
+					int y = MaxY - posInfo.PosY;
+					if (_objects[y, x] == gameObject)
+						_objects[y, x] = null;
+				}
+
+				{
+					int x = dest.x - MinX;
+					int y = MaxY - dest.y;
+					_objects[y, x] = gameObject;
+				}
 			}
 
+			// Zone
 			GameObjectType type = ObjectManager.GetObjectById(gameObject.Id);
 			if (type == GameObjectType.Player)
             {

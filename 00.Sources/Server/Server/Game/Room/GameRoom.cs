@@ -61,7 +61,7 @@ namespace Server.Game
             Monster monster = ObjectManager.Instance.Add<Monster>();
             monster.Init(1);
             monster.CellPos = new Vector2Int(5, 5);
-            EnterGame(monster);
+            EnterGame(monster, randomPos: true);
         }
 
         // 일반적으로 10Hz(100ms) 수준으로 연산
@@ -70,10 +70,26 @@ namespace Server.Game
             Flush();
         }
 
-        public void EnterGame(GameObject gameObject)
+        Random _rand = new Random();
+        public void EnterGame(GameObject gameObject, bool randomPos)
         {
             if (gameObject == null)
                 return;
+
+            if (randomPos)
+            {
+                Vector2Int respawnPos;
+                while (true)
+                {
+                    respawnPos.x = _rand.Next(Map.MinX, Map.MaxX + 1);
+                    respawnPos.y = _rand.Next(Map.MinY, Map.MaxY + 1);
+                    if (Map.Find(respawnPos) == null)
+                    {
+                        gameObject.CellPos = respawnPos;
+                        break;
+                    }
+                }
+            }
 
             GameObjectType type = ObjectManager.GetObjectById(gameObject.Id);
 
@@ -117,11 +133,20 @@ namespace Server.Game
                 GetZone(projectile.CellPos).Projectiles.Add(projectile);
                 projectile.Update();
             }
+
+            // 타인에게 정보 전송
+            {
+                S_Spawn spawnPacket = new S_Spawn();
+                spawnPacket.Objects.Add(gameObject.Info);
+                Broadcast(gameObject.CellPos, spawnPacket);
+            }
         }
 
         public void LeaveGame(int objectId)
         {
             GameObjectType type = ObjectManager.GetObjectById(objectId);
+
+            Vector2Int cellPos;
 
             if (type == GameObjectType.Player)
             {
@@ -129,7 +154,7 @@ namespace Server.Game
                 if (_players.Remove(objectId, out player) == false)
                     return;
 
-                GetZone(player.CellPos).Players.Remove(player);
+                cellPos = player.CellPos;
 
                 player.OnLeaveGame();
                 Map.ApplyLeave(player);
@@ -147,7 +172,7 @@ namespace Server.Game
                 if (_monsters.Remove(objectId, out monster) == false)
                     return;
 
-                GetZone(monster.CellPos).Monsters.Remove(monster);
+                cellPos = monster.CellPos;
 
                 Map.ApplyLeave(monster);
                 monster.Room = null;
@@ -158,9 +183,21 @@ namespace Server.Game
                 if (_projectiles.Remove(objectId, out projectile) == false)
                     return;
 
-                GetZone(projectile.CellPos).Projectiles.Remove(projectile);
+                cellPos = projectile.CellPos;
 
+                Map.ApplyLeave(projectile);
                 projectile.Room = null;
+            }
+            else
+            {
+                return;
+            }
+
+            // 타인에게 정보 전송
+            {
+                S_Despawn despawnPacket = new S_Despawn();
+                despawnPacket.ObjectIds.Add(objectId);
+                Broadcast(cellPos, despawnPacket);
             }
         }
 

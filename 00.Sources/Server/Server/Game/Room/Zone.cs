@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Google.Protobuf.Protocol;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -17,6 +18,24 @@ namespace Server.Game
         {
             IndexY = y;
             IndexX = x;
+        }
+
+        public void Remove(GameObject gameObject)
+        {
+            GameObjectType type = ObjectManager.GetObjectById(gameObject.Id);
+
+            switch (type)
+            {
+                case GameObjectType.Player:
+                    Players.Remove((Player)gameObject);
+                    break;
+                case GameObjectType.Monster:
+                    Monsters.Remove((Monster)gameObject);
+                    break;
+                case GameObjectType.Projectile:
+                    Projectiles.Remove((Projectile)gameObject);
+                    break;
+            }
         }
 
         public Player FindOnePlayer(Func<Player, bool> condition)
