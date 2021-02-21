@@ -110,7 +110,9 @@ class PacketHandler
     {
 		Debug.Log("S_ConnectedHandler");
 		C_Login loginPacket = new C_Login();
-		loginPacket.UniqueId = SystemInfo.deviceUniqueIdentifier;
+
+		string path = Application.dataPath;
+		loginPacket.UniqueId = path.GetHashCode().ToString(); //SystemInfo.deviceUniqueIdentifier;
 		Managers.Network.Send(loginPacket);
     }
 
@@ -214,5 +216,13 @@ class PacketHandler
 		S_ChangeStat itemList = (S_ChangeStat)packet;
 
 		// TODO
+	}
+
+	public static void S_PingHandler(PacketSession session, IMessage packet)
+	{
+		C_Pong pongPacket = new C_Pong();
+		Debug.Log("[Server] Ping check");
+
+		Managers.Network.Send(pongPacket);
 	}
 } 

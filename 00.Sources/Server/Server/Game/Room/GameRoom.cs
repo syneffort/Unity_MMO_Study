@@ -58,10 +58,12 @@ namespace Server.Game
             }
 
             // TEMP
-            Monster monster = ObjectManager.Instance.Add<Monster>();
-            monster.Init(1);
-            monster.CellPos = new Vector2Int(5, 5);
-            EnterGame(monster, randomPos: true);
+            for (int i = 0; i < 500; i++)
+            {
+                Monster monster = ObjectManager.Instance.Add<Monster>();
+                monster.Init(1);
+                EnterGame(monster, randomPos: true);
+            }
         }
 
         // 일반적으로 10Hz(100ms) 수준으로 연산
