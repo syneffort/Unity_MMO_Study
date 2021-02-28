@@ -107,6 +107,8 @@ namespace Server.Game
                 player.Room = this;
 
                 player.RefreshAdditionalStat();
+                if (player.Hp <= 0)
+                    player.Hp = 1;
 
                 Map.ApplyMove(player, new Vector2Int(player.CellPos.x, player.CellPos.y));
                 GetZone(player.CellPos).Players.Add(player);
