@@ -13,7 +13,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{8B491CF6
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DummyClient", "DummyClient\DummyClient.csproj", "{02A5F7F4-E59E-4696-A56D-9E7BC086672A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccountServer", "AccountServer\AccountServer.csproj", "{C1905EF4-A1F6-4BF9-A452-A80B0453CA50}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AccountServer", "AccountServer\AccountServer.csproj", "{C1905EF4-A1F6-4BF9-A452-A80B0453CA50}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedDB", "SharedDB\SharedDB.csproj", "{535E5CFD-BB48-4972-8C74-AD315D9A360C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,6 +43,10 @@ Global
 		{C1905EF4-A1F6-4BF9-A452-A80B0453CA50}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C1905EF4-A1F6-4BF9-A452-A80B0453CA50}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C1905EF4-A1F6-4BF9-A452-A80B0453CA50}.Release|Any CPU.Build.0 = Release|Any CPU
+		{535E5CFD-BB48-4972-8C74-AD315D9A360C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{535E5CFD-BB48-4972-8C74-AD315D9A360C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{535E5CFD-BB48-4972-8C74-AD315D9A360C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{535E5CFD-BB48-4972-8C74-AD315D9A360C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

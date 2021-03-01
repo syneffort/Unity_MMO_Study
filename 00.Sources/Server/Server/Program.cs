@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Timers;
 using Google.Protobuf;
 using Google.Protobuf.Protocol;
 using Google.Protobuf.WellKnownTypes;
@@ -15,6 +16,7 @@ using Server.Data;
 using Server.DB;
 using Server.Game;
 using ServerCore;
+using SharedDB;
 
 namespace Server
 {
@@ -62,8 +64,51 @@ namespace Server
             }
         }
 
+		static void StartServerInfoTask()
+        {
+            System.Timers.Timer t = new System.Timers.Timer();
+			t.AutoReset = true;
+			t.Elapsed += new ElapsedEventHandler((s, e) =>
+			{
+				using (SharedDbContext shared = new SharedDbContext())
+                {
+					ServerDb serverDb = shared.Servers.Where(s => s.Name == Name).FirstOrDefault();
+					if (serverDb != null)
+                    {
+						serverDb.IpAddress = IpAddress;
+						serverDb.Port = Port;
+						serverDb.BusyScore = SessionManager.Instance.GetBusyScore();
+						shared.SaveChangesEx();
+					}
+					else
+                    {
+						serverDb = new ServerDb()
+						{
+							Name = Program.Name,
+							IpAddress = Program.IpAddress,
+							Port = Program.Port,
+							BusyScore = SessionManager.Instance.GetBusyScore()
+						};
+						shared.Servers.Add(serverDb);
+						shared.SaveChangesEx();
+                    }
+                }
+			});
+			t.Interval = 10 * 1000;
+			t.Start();
+        }
+
+		public static string Name { get; } = "테스트 서버 1";
+		public static int Port { get; } = 7777;
+		public static string IpAddress { get; set; }
+
 		static void Main(string[] args)
 		{
+			using (SharedDbContext shared = new SharedDbContext())
+            {
+
+            }
+
 			ConfigManager.LoadConfig();
 			DataManager.LoadData();
 
@@ -72,11 +117,15 @@ namespace Server
 			// DNS (Domain Name System)
 			string host = Dns.GetHostName();
 			IPHostEntry ipHost = Dns.GetHostEntry(host);
-			IPAddress ipAddr = ipHost.AddressList[0];
-			IPEndPoint endPoint = new IPEndPoint(ipAddr, 7777);
+			IPAddress ipAddr = ipHost.AddressList[1];
+			IPEndPoint endPoint = new IPEndPoint(ipAddr, Port);
+
+			IpAddress = ipAddr.ToString();
 
 			_listener.Init(endPoint, () => { return SessionManager.Instance.Generate(); });
 			Console.WriteLine("Listening...");
+
+			StartServerInfoTask();
 
             // DB Task
             {

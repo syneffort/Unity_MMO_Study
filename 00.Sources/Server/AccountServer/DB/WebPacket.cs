@@ -23,12 +23,15 @@ public class LoginAccountPacketReq
 public class ServerInfo
 {
     public string Name { get; set; }
-    public string Ip { get; set; }
-    public int CrowdedLevel { get; set; }
+    public string IPAddress { get; set; }
+    public int Port { get; set; }
+    public int BusyScore { get; set; }
 }
 
 public class LoginAccountPacketRes
 {
     public bool LoginOk { get; set; }
+    public int AccountDbId { get; set; }
+    public int Token { get; set; }
     public List<ServerInfo> ServerList { get; set; } = new List<ServerInfo>();
 }
